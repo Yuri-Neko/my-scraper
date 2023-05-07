@@ -117,28 +117,29 @@ async function Detail(url) {
 
     const downloadList = [];
 
-    $('h4').each(function(i, elem) {
-      const episode = $(this).text().trim();
-      const episodeDownloads = [];
+$('h4').each(function(i, elem) {
+  const episode = $(this).text().trim();
+  const episodeDownloads = [];
 
-      $(this).siblings('ul').find('li').each(function() {
-        const quality = $(this).find('strong').text().trim();
-        const links = $(this).find('span a').map(function() {
-          return $(this).attr('href');
-        }).get();
+  $(this).siblings('ul').find('li').each(function() {
+    const quality = $(this).find('strong').text().trim();
+    const links = $(this).find('span a').map(function() {
+      const link = $(this).attr('href');
+      const host = getHost(link);
+      return { link, host };
+    }).get();
 
-        episodeDownloads.push({
-          quality,
-          links
-        });
-      });
-
-      downloadList.push({
-        episode,
-        episodeDownloads
-      });
+    episodeDownloads.push({
+      quality,
+      links
     });
+  });
 
+  downloadList.push({
+    episode,
+    episodeDownloads
+  });
+});
     return {
       title,
       thumb,
@@ -160,5 +161,10 @@ async function Detail(url) {
   }
 }
 
+function getHost(url) {
+  const regex = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)/gim;
+  const match = regex.exec(url);
+  return match && match[1];
+}
 
 module.exports = { Batch, Ongoing, Movie, Detail };
