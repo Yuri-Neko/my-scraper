@@ -1,4 +1,4 @@
-  const axios = require('axios');
+const axios = require('axios');
 const cheerio = require('cheerio');
 const BaseURL = 'https://www.animebatch.id';
 
@@ -90,8 +90,7 @@ async function Movie() {
     });
 
     return movies;
-  });
-} catch (error) {
+  } catch (error) {
     console.log(error);
   }
 }
