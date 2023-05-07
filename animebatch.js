@@ -1,4 +1,4 @@
-const axios = require('axios');
+  const axios = require('axios');
 const cheerio = require('cheerio');
 const BaseURL = 'https://www.animebatch.id';
 
@@ -77,41 +77,6 @@ async function Movie() {
       const image = $(el).find('.img img').attr('src');
       const desc = $(el).find('.exp p').text().trim();
       const date = $(el).find('.auth i').text().trim();
-
-      const movie = {
-        title,
-        url,
-        image,
-        desc,
-        date
-      };
-
-      movies.push(movie);
-    });
-
-    return movies;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-
-async function Detail(url) {
-  try {
-    const response = await axios.get(url);
-    const html = response.data;
-    const $ = cheerio.load(html);
-
-    const title = $('h1.entry-title').text();
-    const thumb = $('img[itemprop="image"]').attr('src');
-    const episodeCount = $('span.Episodex').text().replace('Jumlah Episode ', '');
-    const releaseDate = $('span:contains("Tanggal Rilis")').text().replace('Tanggal Rilis ', '');
-    const duration = $('span:contains("Movies") .box-blog').each((i, el) => {
-    const title = $(el).find('.data h2 a').text().trim();
-    const url = $(el).find('.data h2 a').attr('href');
-    const image = $(el).find('.img img').attr('src');
-    const desc = $(el).find('.exp p').text().trim();
-    const date = $(el).find('.auth i').text().trim();
 
       const movie = {
         title,
