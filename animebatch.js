@@ -1,7 +1,8 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const BaseURL = 'https://www.animebatch.id';
-const Batch = async () => {
+
+async function Batch() {
   try {
     const response = await axios.get(BaseURL);
     const html = response.data;
@@ -31,7 +32,8 @@ const Batch = async () => {
     console.log(error);
   }
 }
-const Ongoing = async () => {
+
+async function Ongoing() {
   try {
     const response = await axios.get(BaseURL);
     const html = response.data;
@@ -62,7 +64,8 @@ const Ongoing = async () => {
     console.log(error);
   }
 }
-const Movie = async () => {
+
+async function Movie() {
   try {
     const response = await axios.get(BaseURL);
     const html = response.data;
@@ -93,4 +96,70 @@ const Movie = async () => {
   }
 }
 
-module.exports = { Batch, Ongoing, Movie };
+
+async function Detail(url) {
+  try {
+    const response = await axios.get(url);
+    const html = response.data;
+    const $ = cheerio.load(html);
+
+    const title = $('h1.entry-title').text();
+    const thumb = $('img[itemprop="image"]').attr('src');
+    const episodeCount = $('span.Episodex').text().replace('Jumlah Episode ', '');
+    const releaseDate = $('span:contains("Tanggal Rilis")').text().replace('Tanggal Rilis ', '');
+    const duration = $('span:contains("Durasi per Episode")').text().replace('Durasi per Episode ', '');
+    const score = $('span.Scorex').text().replace('Skor ', '');
+    const views = $('span:contains("Dilihat")').text().replace('Dilihat ', '');
+    const genre = $('span.Genrex').text().replace('Genre ', '').replace(/[\r\n\t]+/g, '');
+    const studio = $('span.Studiox').text().replace('Studio', '').replace(/[\r\n\t]+/g, '');
+    const season = $('span:contains("Musim Rilis")').text().replace('Musim Rilis ', '');
+    const status = $('span:contains("Status Anime")').text().replace('Status Anime ', '');
+    const description = $('div.downman p').text();
+
+    const downloadList = [];
+
+    $('h4').each(function(i, elem) {
+      const episode = $(this).text().trim();
+      const episodeDownloads = [];
+
+      $(this).siblings('ul').find('li').each(function() {
+        const quality = $(this).find('strong').text().trim();
+        const links = $(this).find('span a').map(function() {
+          return $(this).attr('href');
+        }).get();
+
+        episodeDownloads.push({
+          quality,
+          links
+        });
+      });
+
+      downloadList.push({
+        episode,
+        episodeDownloads
+      });
+    });
+
+    return {
+      title,
+      thumb,
+      episodeCount,
+      releaseDate,
+      duration,
+      score,
+      views,
+      genre,
+      studio,
+      season,
+      status,
+      description,
+      downloadList
+    };
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+module.exports = { Batch, Ongoing, Movie, Detail };
