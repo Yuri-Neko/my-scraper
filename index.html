@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Komik Terbaru</title>
+	<style>
+		.container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.card {
+			margin: 10px;
+			width: 300px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			overflow: hidden;
+			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		.card img {
+			width: 100%;
+			height: 250px;
+			object-fit: cover;
+		}
+
+		.card h3 {
+			margin: 10px;
+			font-size: 18px;
+			font-weight: bold;
+			color: #333;
+			text-align: center;
+		}
+
+		.card p {
+			margin: 10px;
+			font-size: 14px;
+			color: #666;
+			text-align: center;
+		}
+
+		.card a {
+			display: block;
+			margin: 10px;
+			padding: 10px;
+			background-color: #007bff;
+			color: #fff;
+			text-align: center;
+			text-decoration: none;
+			border-radius: 5px;
+		}
+
+		.card a:hover {
+			background-color: #0069d9;
+		}
+	</style>
+</head>
+<body>
+	<div class="container"></div>
+
+	<script>
+		const apikey = 'beta3days';
+		const apiUrl = `https://web.api-kyouka.my.id/api/nsfw/doujindesu/latest?apikey=${apikey}`;
+
+		fetch(apiUrl)
+			.then(response => response.json())
+			.then(data => {
+				const container = document.querySelector('.container');
+
+				data.result.forEach(item => {
+					const card = document.createElement('div');
+					card.classList.add('card');
+
+					const img = document.createElement('img');
+					img.src = item.cover;
+
+					const h3 = document.createElement('h3');
+					h3.innerText = item.title;
+
+					const p1 = document.createElement('p');
+					p1.innerText = `Chapter: ${item.chapter}`;
+
+					const p2 = document.createElement('p');
+					p2.innerText = `Type: ${item.type}`;
+
+					const a = document.createElement('a');
+					a.href = item.url;
+					a.innerText = 'Baca Sekarang';
+
+					card.appendChild(img);
+					card.appendChild(h3);
+					card.appendChild(p1);
+					card.appendChild(p2);
+					card.appendChild(a);
+
+					container.appendChild(card);
+				});
+			})
+			.catch(error => console.log(error));
+	</script>
+</body>
+</html>
